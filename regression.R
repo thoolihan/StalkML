@@ -1,5 +1,7 @@
 library(ggplot2)
 
+# based on: http://www.r-bloggers.com/how-to-perform-a-logistic-regression-in-r/
+
 # load data
 market <- read.csv("data/stalk.csv", header = TRUE)
 factors <- c("MonAM", "MonPM", "TueAM", "TuePM")
