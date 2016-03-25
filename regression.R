@@ -7,7 +7,8 @@ keep <- c("MonAM", "MonPM", "TueAM", "TuePM", "IsDescending")
 market <- market[, keep]
 
 # clean up
-market$IsDescending <- ifelse(market$IsDescending == 'Y', 1, 0)
+market$IsDescending <- as.integer(ifelse(market$IsDescending == 'Y', 1, 0))
+
 na.omit(market)
 
 # helpful variables
@@ -21,3 +22,5 @@ market <- market[sample(n),]
 
 train <- market[itrain,]
 test <- market[itest,]
+
+model <- glm(IsDescending ~.,family=binomial(link='logit'),data=train)
