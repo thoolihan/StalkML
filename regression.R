@@ -4,13 +4,25 @@ library(ggplot2)
 
 # load data
 market <- read.csv("data/stalk.csv", header = TRUE)
-factors <- c("MonAM", "MonPM", "TueAM", "TuePM")
+factors <- c("MonAM", "MonPM", "TueAM", "TuePM", "ch1", "ch2", "ch3")
 keep <- c(factors, "IsDescending")
-market <- market[, keep]
+
+# alter columns
+market$ch1 <- market$MonPM - market$MonAM
+market$ch2 <- market$TueAM - market$MonPM
+market$ch3 <- market$TuePM - market$TueAM
+market$IsDescending <- as.integer(ifelse(market$IsDescending == 'Y', 1, 0))
 
 # clean up
-market$IsDescending <- as.integer(ifelse(market$IsDescending == 'Y', 1, 0))
+market <- market[, keep]
 market <- na.omit(market)
+
+# normalize
+normalize <- function(col) {
+  return ((col - min(col)) / (max(col) - min(col)))
+}
+
+for(col in factors) { market[, col] <-  normalize(market[, col])}
 
 # helpful variables
 n <- nrow(market)
@@ -21,6 +33,7 @@ itest <- (split + 1):n
 # randomize
 market <- market[sample(n),]
 
+# split
 train <- market[itrain,]
 test <- market[itest,]
 
