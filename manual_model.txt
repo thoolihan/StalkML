@@ -1,0 +1,13 @@
+#linear regression (manual)
+
+[1] "normalizing  SunAM  mean: 99.1333333333333  sd: 5.68037557443754"
+[1] "normalizing  MonAM  mean: 86.4666666666667  sd: 18.3570409483923"
+[1] "normalizing  MonPM  mean: 83.9333333333333  sd: 20.0123771225519"
+[1] "normalizing  TueAM  mean: 92.5333333333333  sd: 32.7214797662825"
+[1] "normalizing  TuePM  mean: 94.1333333333333  sd: 38.7646132199876"
+[1] "normalizing  ch0  mean: -12.6666666666667  sd: 20.0166597280032"
+[1] "normalizing  ch1  mean: -2.53333333333333  sd: 8.56793579630028"
+[1] "normalizing  ch2  mean: 8.6  sd: 22.9184891050249"
+[1] "normalizing  ch3  mean: 1.6  sd: 27.6736078498733"
+       bias       SunAM       MonAM       MonPM       TueAM       TuePM         ch0         ch1         ch2         ch3 
+-11.1655755  -0.6457159  -4.4763697   8.7899469   0.3434870 -12.7103425   9.6562539  -4.3981548 -11.3498242   8.2724981 
