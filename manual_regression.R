@@ -22,8 +22,8 @@ market <- na.omit(market)
 
 # normalize
 normalize <- function(col, name = deparse(substitute(col))) {
-  print(paste('normalizing ', name))
-  return ((col - min(col)) / (max(col) - min(col)))
+  print(paste('normalizing ', name, ' mean:', mean(col), ' sd:', sd(col)))
+  return ((col - mean(col)) / sd(col))
 }
 
 for(col in normalized_factors) { market[, col] <-  normalize(market[, col], col)}
