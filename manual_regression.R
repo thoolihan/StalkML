@@ -48,21 +48,24 @@ test <- market[itest,]
 X <- data.matrix(market[,factors])
 y <- market$IsDescending
 theta <- rep(0, length(factors))
+lambda <- 0.25
 
-cost <- function(theta, X, y) {
+cost <- function(theta, X, y, lambda) {
   vals <- X %*% theta
   (1 / nrow(X)) * sum((-1 * y) * log(sigmoid(vals)) - 
-                  (1 - y) * log(1 - sigmoid(vals)))
+                  (1 - y) * log(1 - sigmoid(vals))) +
+      ((lambda / nrow(X)) * sum(theta[2:length(theta)] ^ 2))
 }
 
-cost_wrapper <- Curry(cost, X = X, y = y)
+cost_wrapper <- Curry(cost, X = X, y = y, lambda = lambda)
 
-grad <- function(theta, X, y) {
+grad <- function(theta, X, y, lambda) {
   vals <- X %*% theta
-  (1 / nrow(X)) * (t(X) %*% (sigmoid(vals) - y))
+  (1 / nrow(X)) * (t(X) %*% (sigmoid(vals) - y)) + 
+    ((lambda / nrow(X)) * sum(theta[2:length(theta)]))
 }
 
-grad_wrapper <- Curry(grad, X = X, y = y)
+grad_wrapper <- Curry(grad, X = X, y = y, lambda = lambda)
 
 model <- optim(par = theta, 
                fn = cost_wrapper, 
