@@ -21,11 +21,12 @@ market <- market[, keep]
 market <- na.omit(market)
 
 # normalize
-normalize <- function(col) {
+normalize <- function(col, name = deparse(substitute(col))) {
+  print(paste('normalizing ', name))
   return ((col - min(col)) / (max(col) - min(col)))
 }
 
-for(col in normalized_factors) { market[, col] <-  normalize(market[, col])}
+for(col in normalized_factors) { market[, col] <-  normalize(market[, col], col)}
 
 #add bias column
 market$bias <- 1
