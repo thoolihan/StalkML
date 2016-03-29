@@ -50,8 +50,7 @@ theta <- rep(0, length(factors))
 
 cost <- function(theta, X, y) {
   vals <- X %*% theta
-  m <- nrow(X)
-  (1 / m) * sum((-1 * y) * log(sigmoid(vals)) - 
+  (1 / nrow(X)) * sum((-1 * y) * log(sigmoid(vals)) - 
                   (1 - y) * log(1 - sigmoid(vals)))
 }
 
@@ -59,8 +58,7 @@ cost_wrapper <- Curry(cost, X = X, y = y)
 
 grad <- function(theta, X, y) {
   vals <- X %*% theta
-  m <- nrow(X)
-  (1 / m) * (t(X) %*% (sigmoid(vals) - y))
+  (1 / nrow(X)) * (t(X) %*% (sigmoid(vals) - y))
 }
 
 grad_wrapper <- Curry(grad, X = X, y = y)
