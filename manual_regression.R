@@ -35,14 +35,13 @@ market$bias <- 1
 n <- nrow(market)
 split <- floor(n * 0.6)
 itrain <- 1:split
-itest <- (split + 1):n
 
 # randomize
 market <- market[sample(n),]
 
 # split
 train <- market[itrain,]
-test <- market[itest,]
+test <- market[-itrain,]
 
 # create model
 X <- data.matrix(market[,factors])
