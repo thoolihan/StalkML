@@ -12,7 +12,7 @@ market$ch0 <- market$MonAM - market$SunAM
 market$ch1 <- market$MonPM - market$MonAM
 market$ch2 <- market$TueAM - market$MonPM
 market$ch3 <- market$TuePM - market$TueAM
-market$IsDescending <- as.integer(ifelse(market$IsDescending == 'Y', 1, 0))
+market$IsDescending <- as.factor(ifelse(market$IsDescending == 'Y', 1, 0))
 
 # clean up
 market <- market[, keep]
@@ -39,12 +39,14 @@ train <- market[itrain,]
 test <- market[itest,]
 
 # create model
+
 model <- glm(IsDescending ~ ., 
              family=binomial(link='logit'), 
-             data = train)
+             data = train,
+             control = list(maxit = 500))
 
 # predict
-test$prediction <- predict(model, newdata = test[, factors], type='response')
+test$prediction <- predict(model, test[, factors] )
 test$prediction <- ifelse(test$prediction > 0.5, 1, 0)
 
 # setup rsults
