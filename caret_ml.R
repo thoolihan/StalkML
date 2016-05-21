@@ -4,34 +4,34 @@ library(dplyr)
 library(foreach)
 library(caret)
 
-market.classes <- c(rep('integer', 14), 'factor')
+market.classes <- c(rep('numeric', 14), 'factor')
 market <- read.csv("data/stalk.csv", 
                    colClasses = market.classes, 
                    na.strings = c('', 'NA'),
                    header = TRUE)
 
-market <- select(market, -WedAM, -WedPM, -ThuAM, -ThuPM,
-                 -FriAM, -FriPM, -SatAM, -SatPM, -Week) %>%
-          mutate(SunAM = as.integer(ifelse(is.na(SunAM), mean(SunAM, na.rm = TRUE), SunAM))) %>%
-          na.omit() 
+market <- dplyr::select(market, -WedAM, -WedPM, -ThuAM, -ThuPM,
+                        -FriAM, -FriPM, -SatAM, -SatPM, -Week) %>%
+  mutate(SunAM = ifelse(is.na(SunAM), mean(SunAM, na.rm = TRUE), SunAM),
+         ch0 = MonAM - SunAM,
+         ch1 = MonPM - MonAM,
+         ch2 = TueAM - MonPM,
+         ch3 = TuePM - TueAM) %>%
+  na.omit() 
           
 train.rows <- createDataPartition(market$IsDescending, p = 0.6, list = FALSE)
 data.train <- market[train.rows,]
 data.test <- market[-(train.rows),]
 
-train.ctrl <- trainControl(method = "repeatedcv", 
-                           repeats = 3,
-                        summaryFunction = twoClassSummary,
+train.ctrl <- trainControl(summaryFunction = twoClassSummary(),
                         classProbs = TRUE)
-model <- glm(IsDescending ~ ., 
-             data = data.train,
-             family = binomial("logit"))
 
-# model <- train(IsDescending ~ .,
-#                data = data.train,
-#                method = "glm",
-#                metric = "ROC", 
-#                trControl = train.ctrl)
+model <- train(IsDescending ~ .,
+               data = data.train,
+               method = "glm",
+               metric = "rmse", 
+               trControl = train.ctrl)
+
 print(summary(model))
 print(anova(model, test = "Chisq"))
 
