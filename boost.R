@@ -17,7 +17,9 @@ market <- dplyr::select(market, -WedAM, -WedPM, -ThuAM, -ThuPM,
          ch1 = MonPM - MonAM,
          ch2 = TueAM - MonPM,
          ch3 = TuePM - TueAM,
-         IsDescending = as.integer(revalue(IsDescending, replace = c('Y' = 1, 'N' = 0)))) %>%
+         EvenStart = SunAM %% 2,
+         IsDescending = as.integer(revalue(IsDescending, replace = c('Y' = 1, 'N' = 0)))
+         ) %>%
   na.omit() 
 
 train.rows <- createDataPartition(market$IsDescending, p = 0.6, list = FALSE)
