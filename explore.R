@@ -1,16 +1,18 @@
 library(ggplot2)
 
 # load data
-market <- read.csv("data/stalk.csv", header = TRUE)
-
-# clean up
-market <- na.omit(market)
-market$IsDescending <- ifelse(market$IsDescending == 'Y', 1, 0)
+market <- read.csv("data/stalk.csv", 
+                   colClasses = c(rep('numeric', 14), 'factor'), 
+                   header = TRUE)
 
 # average loss of a Thursday sale vs Tuesday sale for descending
-pos <- market[market$IsDescending == 1,]
-avg_loss <- mean(pos$TuePM - pos$ThuPM)
-print(paste("tu - th loss", avg_loss))
+pos <- market[market$IsDescending == 'Y',]
+avg_loss <- mean(pos$TuePM - pos$ThuPM, na.rm = TRUE)
+print(paste("Average Loss When Descending", avg_loss))
 
-# plot descending by starting price
-print(qplot(market$IsDescending, market$SunAM))
+# plot
+plt <- ggplot(market, 
+              aes(SunAM, fill = factor(IsDescending))) + 
+        geom_histogram(binwidth = 1)
+print(plt)
+
