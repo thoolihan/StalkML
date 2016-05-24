@@ -4,19 +4,18 @@ library(caret)
 
 market.classes <- c(rep('numeric', 14), 'factor')
 market <- read.csv("data/stalk.csv", 
-                   #colClasses = market.classes, 
+                   colClasses = market.classes, 
                    na.strings = c('', 'NA'),
                    header = TRUE)
 
 market <- dplyr::select(market, -WedAM, -WedPM, -ThuAM, -ThuPM,
                         -FriAM, -FriPM, -SatAM, -SatPM, -Week) %>%
-#   mutate(ch0 = MonAM - SunAM,
-#          ch1 = MonPM - MonAM,
-#          ch2 = TueAM - MonPM,
-#          ch3 = TuePM - TueAM,
-#          EvenStart = SunAM %% 2) %>%
-  na.omit() %>%
-  mutate(IsDescending = factor(IsDescending))
+  mutate(ch0 = MonAM - SunAM,
+         ch1 = MonPM - MonAM,
+         ch2 = TueAM - MonPM,
+         ch3 = TuePM - TueAM,
+         EvenStart = SunAM %% 2) %>%
+  na.omit()
 
 market$IsDescending <- revalue(market$IsDescending, c(Y = 'YES', N = 'NO'))
           
@@ -28,18 +27,17 @@ train.ctrl <- trainControl(method = "repeatedcv",
                            repeats = 3,
                            classProbs = TRUE,
                            summaryFunction = twoClassSummary)
+tg <- expand.grid(.mtry = 1:5)
 
 model <- train(IsDescending ~ .,
                data = data.train,
-               method = "pls",
-               tuneLength = 15,
+               method = "rf",
                trControl = train.ctrl,
+               tuneGrid = tg,
                metric = "ROC",
                preProcess = c('center', 'scale'))
 
-#print(summary(model))
-#print(anova(model, test = "Chisq"))
+print(model)
 
-#data.test$Prob <- predict.glm(model, data.test, type = 'response')
-#data.test$Output <- ifelse((data.test$Prob >= 0.5), 'Y', 'N')
-#print(confusionMatrix(data.test$Output, data.test$IsDescending))
+data.test$Output <- predict(model, data.test)
+print(confusionMatrix(data.test$Output, data.test$IsDescending))
